@@ -1,5 +1,5 @@
 /* vim:ts=8
- * $Id: movelock.c,v 1.1 2005/08/09 03:21:36 jcs Exp $
+ * $Id: movelock.c,v 1.2 2005/08/09 16:10:48 jcs Exp $
  *
  * movelock
  * freak out when the accelerometer detects too much movement
@@ -43,7 +43,9 @@
 /* #define DEBUG 1 */
 
 /* program to run when we detect too much movement (lock x, halt -p, etc.) */
+#ifndef LOCK_PROG
 #define LOCK_PROG "xautolock -locknow"
+#endif
 
 /* how many seconds to check movement */
 #define MOVE_TIME 1
@@ -54,6 +56,8 @@
 
 /* time to wait after allowing a second spawning of LOCK_PROG */
 #define LOCK_WAIT 3
+
+extern char *__progname;
 
 int	getsensor(int);
 void	spawn(char *);
@@ -148,9 +152,7 @@ getsensor(int s)
 void
 spawn(char *prog)
 {
-#ifdef DEBUG
-	printf("executing \"%s\"\n", prog);
-#endif
+	printf("%s: executing \"%s\"\n", __progname, prog);
 
 	system(prog);
 }
