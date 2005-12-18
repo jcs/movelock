@@ -1,5 +1,5 @@
 /* vim:ts=8
- * $Id: movelock.c,v 1.2 2005/08/09 16:10:48 jcs Exp $
+ * $Id: movelock.c,v 1.3 2005/12/18 03:31:46 jcs Exp $
  *
  * movelock
  * freak out when the accelerometer detects too much movement
@@ -18,7 +18,7 @@
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  * 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
