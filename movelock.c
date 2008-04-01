@@ -1,10 +1,10 @@
 /* vim:ts=8
- * $Id: movelock.c,v 1.3 2005/12/18 03:31:46 jcs Exp $
+ * $Id: movelock.c,v 1.4 2008/04/01 01:12:01 jcs Exp $
  *
  * movelock
  * freak out when the accelerometer detects too much movement
  *
- * Copyright (c) 2005 joshua stein <jcs@jcs.org>
+ * Copyright (c) 2005, 2008 joshua stein <jcs@jcs.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -54,12 +54,19 @@
 #define MOVE_THRESH_X 20
 #define MOVE_THRESH_Y 10
 
+/* MIB names for sensor (aps) device, X_VAR, and Y_VAR sensors */
+#define APS_DEV_NUM	0
+#define X_VAR_TYPE	10
+#define X_VAR_NUMT	2
+#define Y_VAR_TYPE	10
+#define Y_VAR_NUMT	3
+
 /* time to wait after allowing a second spawning of LOCK_PROG */
 #define LOCK_WAIT 3
 
 extern char *__progname;
 
-int	getsensor(int);
+int64_t	getsensor(int, int, int);
 void	spawn(char *);
 
 int
@@ -76,11 +83,11 @@ main(int argc, char *argv[])
 		int reset = 0, dolock = 0;
 		time_t curtime;
 
-		/* X_VAR: hw.sensors.2 */
-		newx = getsensor(2);
+		/* X_VAR: hw.sensors.aps0.raw2 */
+		newx = getsensor(APS_DEV_NUM, X_VAR_TYPE, X_VAR_NUMT);
 
-		/* Y_VAR: hw.sensors.3 */
-		newy = getsensor(3);
+		/* Y_VAR: hw.sensors.aps0.raw3 */
+		newy = getsensor(APS_DEV_NUM, Y_VAR_TYPE, Y_VAR_NUMT);
 
 		if (!newx || !newy)
 			goto wait;
@@ -131,22 +138,25 @@ wait:
 	exit(0);
 }
 
-int
-getsensor(int s)
+int64_t
+getsensor(int dev, int type, int numt)
 {
-	int mib[3];
-	size_t size;
+	int mib[5];
+	size_t slen;
 	struct sensor sensor;
+
+	slen = sizeof(sensor);
 
 	mib[0] = CTL_HW;
 	mib[1] = HW_SENSORS;
-	size = sizeof(sensor);
+	mib[2] = dev;
+	mib[3] = type;
+	mib[4] = numt;
 
-	mib[2] = s;
-	if (sysctl(mib, 3, &sensor, &size, NULL, 0) == -1)
+	if (sysctl(mib, 5, &sensor, &slen, NULL, 0) == -1)
 		err(1, "sysctl");
 	
-	return sensor.value;
+	return (sensor.value);
 }
 
 void
